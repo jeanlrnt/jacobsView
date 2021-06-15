@@ -1,0 +1,33 @@
+button[type=button] {
+    margin: .2em;
+}
+
+#item_list {
+    border-radius: 5px;
+    padding: .2em;
+}
+
+.crop-img {
+    width: 32px;
+}
+
+.contest {
+    margin: 1em;
+    border-radius: 5px;
+}
+
+.contest > h6, .contest > div.crops {
+    padding-top: 1em;
+}
+
+.contest.bg-success,.contest.bg-danger {
+    color: white;
+}
+
+.contest.bg-warning {
+    color: black;
+}
+
+.crop-item {
+    cursor: pointer;
+}
