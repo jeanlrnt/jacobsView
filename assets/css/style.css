@@ -31,3 +31,30 @@ button[type=button] {
 .crop-item {
     cursor: pointer;
 }
+
+body {
+    min-height: 100vh;
+}
+
+#footer {
+    position: sticky;
+    bottom: 0;
+}
+
+#header {
+    position: sticky;
+    top: 0;
+}
+
+.bg-white{
+    background-color: white;
+}
+
+.fa, .fab {
+    font-size: 32px;
+    margin: .5em;
+}
+
+#footer>h6 {
+    padding-top: 10px;
+}

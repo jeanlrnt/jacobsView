@@ -10,25 +10,37 @@
 <body>
 
     <div class="container">
-        <div class="text-center">
-            <h1>Jacob's Farming Events</h1>
-            <h5>The list of upcoming farming contests</h5>
+        <div id="header" class="bg-white">
+            <div class="text-center">
+                <h1>Jacob's Farming Events</h1>
+                <h5>The list of upcoming farming contests</h5>
+            </div>
+
+            <div id="item_list" class="bg-light justify-content-center text-center">
+                <button class="btn btn-info" type="button" data-crop="Cactus">Cactus</button>
+                <button class="btn btn-info" type="button" data-crop="Carrot">Carrot</button>
+                <button class="btn btn-info" type="button" data-crop="Cocoa Beans">Cocoa beans</button>
+                <button class="btn btn-info" type="button" data-crop="Melon">Melon</button>
+                <button class="btn btn-info" type="button" data-crop="Mushroom">Mushroom</button>
+                <button class="btn btn-info" type="button" data-crop="Nether Wart">Nether wart</button>
+                <button class="btn btn-info" type="button" data-crop="Potato">Potato</button>
+                <button class="btn btn-info" type="button" data-crop="Pumpkin">Pumpkin</button>
+                <button class="btn btn-info" type="button" data-crop="Sugar Cane">Sugar cane</button>
+                <button class="btn btn-info" type="button" data-crop="Wheat">Wheat</button>
+            </div>
         </div>
 
-        <div id="item_list" class="bg-light justify-content-center text-center">
-            <button class="btn btn-info" type="button" data-crop="Cactus">Cactus</button>
-            <button class="btn btn-info" type="button" data-crop="Carrot">Carrot</button>
-            <button class="btn btn-info" type="button" data-crop="Cocoa Beans">Cocoa beans</button>
-            <button class="btn btn-info" type="button" data-crop="Melon">Melon</button>
-            <button class="btn btn-info" type="button" data-crop="Mushroom">Mushroom</button>
-            <button class="btn btn-info" type="button" data-crop="Nether Wart">Nether wart</button>
-            <button class="btn btn-info" type="button" data-crop="Potato">Potato</button>
-            <button class="btn btn-info" type="button" data-crop="Pumpkin">Pumpkin</button>
-            <button class="btn btn-info" type="button" data-crop="Sugar Cane">Sugar cane</button>
-            <button class="btn btn-info" type="button" data-crop="Wheat">Wheat</button>
-        </div>
+        <div id="contest_list"></div>
 
-        <div id="contest_list">
+    </div>
+
+    <div id="footer" class="bg-light text-center">
+        <h6>About</h6>
+        <div class="justify-content-center">
+            <a href="https://tipeee.com/virusking" target="_blank"><i class="fa fa-hand-holding-usd"></i></a>
+            <a href="https://jeanlaurent.fr" target="_blank"><i class="fa fa-link"></i></a>
+            <a href="https://github.com/jeanlrnt" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/jeanlrnt/" target="_blank"><i class="fab fa-linkedin"></i></a>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js" integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
