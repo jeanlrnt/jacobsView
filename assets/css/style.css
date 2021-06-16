@@ -36,11 +36,6 @@ body {
     min-height: 100vh;
 }
 
-#footer {
-    position: sticky;
-    bottom: 0;
-}
-
 #header {
     position: sticky;
     top: 0;
@@ -56,5 +51,5 @@ body {
 }
 
 #footer>h6 {
-    padding-top: 10px;
+    padding-top: 5px;
 }
