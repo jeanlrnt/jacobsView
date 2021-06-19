@@ -116,7 +116,8 @@ function loadContests(items = null) {
                 }
             }
             $('#contest_list').prepend(`<h5 class="text-center pt-2">${count} contests found</h5>`)
-        },
+        if (count === 0){$(`#${event.time}>.crops`).append("<h6>No contests were found, if it's new year, be patient they'll be right back soon</h6>")}
+},
         error: function (error)  {
             console.log(error)
         }
