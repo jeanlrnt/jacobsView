@@ -32,8 +32,8 @@ button[type=button] {
     cursor: pointer;
 }
 
-body {
-    min-height: 100vh;
+body>div:first-child {
+    min-height: calc(100vh - 96px);
 }
 
 #header {
@@ -52,4 +52,8 @@ body {
 
 #footer>h6 {
     padding-top: 5px;
+}
+
+#contest_list>h6{
+    line-height: 10em;
 }
