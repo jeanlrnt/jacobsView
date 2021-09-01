@@ -122,9 +122,9 @@ function loadContests(items = null) {
                     let datetime = new Date(event.time * 1000)
                     if (moment(datetime).diff(moment()) > -1200000) {
 
-                        if (count % 5 === 0) {
+                        /*if (count % 5 === 0) {
                             appendAnnonce($("#contest_list"))
-                        }
+                        }*/
 
                         $('#contest_list')
                             .append(`<div id="${event.time}" class="justify-content-center text-center mx-auto col-sm-6 contest bg-light"><h6></h6><div class="crops row gx-0"></div></div>`)
