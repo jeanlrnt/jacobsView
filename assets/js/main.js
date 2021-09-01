@@ -2,6 +2,24 @@
 let crop_list = Array()
 let uri = './data/jacobs.json'
 
+function appendAnnonce(node) {
+    node.append(`
+    <div class='annonce'>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9459995325290769"
+             crossorigin="anonymous"></script>
+        <!-- annonce 1 -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9459995325290769"
+             data-ad-slot="4182914985"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>`)
+}
+
 function diffToString(diff) {
     let dateformated = ''
     diff.subtract(1, 'hour')
@@ -89,7 +107,8 @@ function loadContests(items = null) {
         dataType: 'JSON',
         success : function (data) {
             let count = 0;
-            $('#contest_list').empty()
+            let contest_list = $('#contest_list')
+            contest_list.empty()
             for (const event of data) {
                 let contains_crop = false
                 for (const crop of event.crops) {
@@ -103,6 +122,10 @@ function loadContests(items = null) {
                     let datetime = new Date(event.time * 1000)
                     if (moment(datetime).diff(moment()) > -1200000) {
 
+                        if (count % 5 === 0) {
+                            appendAnnonce($("#contest_list"))
+                        }
+
                         $('#contest_list')
                             .append(`<div id="${event.time}" class="justify-content-center text-center mx-auto col-sm-6 contest bg-light"><h6></h6><div class="crops row gx-0"></div></div>`)
 
@@ -115,7 +138,7 @@ function loadContests(items = null) {
                     }
                 }
             }
-            $('#contest_list').prepend(`<h5 class="text-center pt-2">${count} contests found</h5>`)
+            contest_list.prepend(`<h5 class="text-center pt-2">${count} contests found</h5>`)
             if (count === 0){
                 $('#contest_list').append("<h6 class='text-center'>No contests were found, if it's new year or Hypixel is down, be patient, contests will return soon</h6>")
             }
@@ -128,8 +151,8 @@ function loadContests(items = null) {
 
 function appendContestTime(parent, datetime) {
 
-    let diff = 0
-    let dateformated = ''
+    let diff
+    let dateformated
 
     if (moment(datetime).diff(moment()) > 0){
         diff = moment(moment(datetime).diff(moment()))
@@ -157,12 +180,15 @@ function updateContestsTime() {
         success : function (data) {
             for (const event of data) {
                 let datetime = new Date(event.time * 1000)
+                let count = 0
                 if (moment(datetime).diff(moment()) > -1200000) {
                     appendContestTime($(`#${event.time}`), datetime)
+                    count += 1
                 } else {
                     $(`#${event.time}`).remove()
                 }
             }
+            $('#contest_list>h5:first-child').html(`${count} contests found`)
         }
     })
 }
