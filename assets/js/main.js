@@ -1,6 +1,6 @@
-
 let crop_list = Array()
 let uri = './data/jacobs.json'
+let allData = {}
 
 function appendAnnonce(node) {
     node.append(`
@@ -25,15 +25,15 @@ function diffToString(diff) {
     diff.subtract(1, 'hour')
     if (diff.second() > 0)
     {
-        dateformated = diff.second() + 's'
+        dateformated = (diff.second() < 10 ? '0' + diff.second() : diff.second()) + 's'
     }
     if (diff.minute() > 0)
     {
-        dateformated = diff.minute() + 'm ' + dateformated
+        dateformated =  (diff.minute() < 10 ? '0' + diff.minute() : diff.minute()) + 'm ' + dateformated
     }
     if ((diff.hour()) > 0)
     {
-        dateformated = (diff.hour()) + 'h ' + dateformated
+        dateformated =  ((diff.hour()) < 10 ? '0' + (diff.hour()) : diff.hour()) + 'h ' + dateformated
     }
     if (diff.dayOfYear()-1 > 0)
     {
@@ -89,14 +89,53 @@ function appendCrop(parent, crop) {
     }
     parent.append(`<div class="col-md-4 crop-item" data-crop="${crop}"><img src="${imgPath}" class="crop-img" alt="${name}"><p>${name}</p></div>`)
     $('.crop-item:last').on('click', function () {
-        loadContests([crop])
+        getContests([crop])
         $('.btn.btn-primary[data-crop]').addClass('btn-info').removeClass('btn-primary')
         $(`.btn.btn-info[data-crop="${crop}"]`).addClass('btn-primary').removeClass('btn-info')
         crop_list = Array(crop)
     })
 }
 
-function loadContests(items = null) {
+function loadContests(items) {
+    let count = 0;
+    let contest_list = $('#contest_list')
+    contest_list.empty()
+    allData.map(event => {
+        let contains_crop = false
+        event.crops.map(crop => {
+            items.map(item => {
+                if (crop === item) {
+                    contains_crop = true
+                }
+            })
+        })
+        if (contains_crop) {
+            let datetime = new Date(event.time * 1000)
+            if (moment(datetime).diff(moment()) > -1200000) {
+
+                /*if (count % 5 === 0) {
+                    appendAnnonce($("#contest_list"))
+                }*/
+
+                $('#contest_list')
+                    .append(`<div id="${event.time}" class="justify-content-center text-center mx-auto col-sm-6 contest bg-light"><h6></h6><div class="crops row gx-0"></div></div>`)
+
+                appendContestTime($(`#${event.time}`), datetime)
+                event.crops.map(crop => {
+                    let node = $(`#${event.time}>.crops`)
+                    appendCrop(node, crop)
+                })
+                count += 1;
+            }
+        }
+    })
+    contest_list.prepend(`<h5 class="text-center pt-2">${count} contests found</h5>`)
+    if (count === 0){
+        $('#contest_list').append("<h6 class='text-center'>No contests were found, if it's new year or Hypixel is down, be patient, contests will return soon</h6>")
+    }
+}
+
+function getContests(items = null) {
     if (items === null) {
         items = ["Cactus","Sugar Cane","Nether Wart","Wheat","Mushroom","Cocoa Beans","Potato","Melon","Pumpkin","Carrot"]
     }
@@ -106,42 +145,8 @@ function loadContests(items = null) {
         method:'GET',
         dataType: 'JSON',
         success : function (data) {
-            let count = 0;
-            let contest_list = $('#contest_list')
-            contest_list.empty()
-            for (const event of data) {
-                let contains_crop = false
-                for (const crop of event.crops) {
-                    for (const item of items) {
-                        if (crop === item) {
-                            contains_crop = true
-                        }
-                    }
-                }
-                if (contains_crop) {
-                    let datetime = new Date(event.time * 1000)
-                    if (moment(datetime).diff(moment()) > -1200000) {
-
-                        /*if (count % 5 === 0) {
-                            appendAnnonce($("#contest_list"))
-                        }*/
-
-                        $('#contest_list')
-                            .append(`<div id="${event.time}" class="justify-content-center text-center mx-auto col-sm-6 contest bg-light"><h6></h6><div class="crops row gx-0"></div></div>`)
-
-                        appendContestTime($(`#${event.time}`), datetime)
-                        for (const crop of event.crops) {
-                            let node = $(`#${event.time}>.crops`)
-                            appendCrop(node, crop)
-                        }
-                        count += 1;
-                    }
-                }
-            }
-            contest_list.prepend(`<h5 class="text-center pt-2">${count} contests found</h5>`)
-            if (count === 0){
-                $('#contest_list').append("<h6 class='text-center'>No contests were found, if it's new year or Hypixel is down, be patient, contests will return soon</h6>")
-            }
+            allData = data;
+            loadContests(items)
         },
         error: function (error)  {
             console.log(error)
@@ -171,30 +176,21 @@ function appendContestTime(parent, datetime) {
 }
 
 function updateContestsTime() {
-    $.ajax({
-        url:uri,
-        crossOrigin: true,
-        method:'GET',
-        dataType: 'JSON',
-        async:false,
-        success : function (data) {
-            for (const event of data) {
-                let datetime = new Date(event.time * 1000)
-                let count = 0
-                if (moment(datetime).diff(moment()) > -1200000) {
-                    appendContestTime($(`#${event.time}`), datetime)
-                    count += 1
-                } else {
-                    $(`#${event.time}`).remove()
-                }
-            }
-            $('#contest_list>h5:first-child').html(`${count} contests found`)
+    let count = 0
+    allData.map(event => {
+        let datetime = new Date(event.time * 1000)
+        if (moment(datetime).diff(moment()) > -1200000) {
+            appendContestTime($(`#${event.time}`), datetime)
+            count += 1
+        } else {
+            $(`#${event.time}`).remove()
         }
     })
+    $('#contest_list>h5:first-child').html(`${count} contests found`)
 }
 
 $(document).ready(() => {
-    loadContests()
+    getContests()
     setInterval(function () {
         updateContestsTime()
     }, 1000)
@@ -208,9 +204,9 @@ $(document).ready(() => {
             crop_list.push(crop_name)
         }
         if (crop_list.length > 0) {
-            loadContests(crop_list)
+            getContests(crop_list)
         } else {
-            loadContests()
+            getContests()
         }
     })
 })
