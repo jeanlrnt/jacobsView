@@ -1,24 +1,7 @@
 let crop_list = Array()
+let allCrops = ["Cactus","Sugar Cane","Nether Wart","Wheat","Mushroom","Cocoa Beans","Potato","Melon","Pumpkin","Carrot"]
 let uri = './data/jacobs.json'
 let allData = {}
-
-function appendAnnonce(node) {
-    node.append(`
-    <div class='annonce'>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9459995325290769"
-             crossorigin="anonymous"></script>
-        <!-- annonce 1 -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9459995325290769"
-             data-ad-slot="4182914985"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>`)
-}
 
 function diffToString(diff) {
     let dateformated = ''
@@ -96,7 +79,7 @@ function appendCrop(parent, crop) {
     })
 }
 
-function loadContests(items) {
+function loadContests(items = allCrops) {
     let count = 0;
     let contest_list = $('#contest_list')
     contest_list.empty()
@@ -113,12 +96,7 @@ function loadContests(items) {
             let datetime = new Date(event.time * 1000)
             if (moment(datetime).diff(moment()) > -1200000) {
 
-                /*if (count % 5 === 0) {
-                    appendAnnonce($("#contest_list"))
-                }*/
-
-                $('#contest_list')
-                    .append(`<div id="${event.time}" class="justify-content-center text-center mx-auto col-sm-6 contest bg-light"><h6></h6><div class="crops row gx-0"></div></div>`)
+                contest_list.append(`<div id="${event.time}" class="justify-content-center text-center mx-auto col-lg-6 contest bg-light"><h6></h6><div class="crops row gx-0"></div></div>`)
 
                 appendContestTime($(`#${event.time}`), datetime)
                 event.crops.map(crop => {
@@ -137,7 +115,7 @@ function loadContests(items) {
 
 function getContests(items = null) {
     if (items === null) {
-        items = ["Cactus","Sugar Cane","Nether Wart","Wheat","Mushroom","Cocoa Beans","Potato","Melon","Pumpkin","Carrot"]
+        items = allCrops
     }
     $.ajax({
         url:uri,
@@ -168,7 +146,7 @@ function appendContestTime(parent, datetime) {
             parent.removeClass('bg-light').addClass('bg-success')
         }
     } else {
-        diff = moment(moment(datetime).diff(moment())).add(20, 'minutes')
+        diff = moment(moment(moment()).diff(datetime))
         dateformated = 'Starts: ' + diffToString(diff) + ' ago'
         parent.removeClass('bg-light').addClass('bg-danger')
     }
@@ -176,17 +154,34 @@ function appendContestTime(parent, datetime) {
 }
 
 function updateContestsTime() {
-    let count = 0
     allData.map(event => {
         let datetime = new Date(event.time * 1000)
         if (moment(datetime).diff(moment()) > -1200000) {
             appendContestTime($(`#${event.time}`), datetime)
-            count += 1
         } else {
             $(`#${event.time}`).remove()
         }
     })
-    $('#contest_list>h5:first-child').html(`${count} contests found`)
+    updateContestsCount(crop_list.length === 0 ? allCrops : crop_list)
+}
+
+function updateContestsCount(crops) {
+    let count = 0
+    allData.map(event => {
+        let contains = false
+        event.crops.map(crop => {
+            let datetime = new Date(event.time * 1000)
+            if (moment(datetime).diff(moment()) > -1200000) {
+                if (crops.includes(crop)) {
+                    contains = true
+                }
+            }
+        })
+        if (contains) {
+            count += 1
+        }
+    })
+    $('#contest_list>h5:first-child').html(`${count} contest${count > 1 ? 's' : '' } found`)
 }
 
 $(document).ready(() => {
@@ -204,9 +199,9 @@ $(document).ready(() => {
             crop_list.push(crop_name)
         }
         if (crop_list.length > 0) {
-            getContests(crop_list)
+            loadContests(crop_list)
         } else {
-            getContests()
+            loadContests()
         }
     })
 })
